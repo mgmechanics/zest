@@ -4,121 +4,105 @@
 package org.mozilla.zest.core.v1;
 
 import java.util.List;
-
 import javax.script.ScriptEngineFactory;
-
 import org.openqa.selenium.WebDriver;
 
+/** The Interface ZestRuntime. */
+public interface ZestRuntime extends ZestOutputWriter {
 
-/**
- * The Interface ZestRuntime.
- */
-public interface ZestRuntime {
-	
-	/**
-	 * Get the current value of the specified variable.
-	 *
-	 * @param name the name
-	 * @return the current value of the specified variable
-	 */
-	String getVariable(String name);
-	
-	/**
-	 * Set the value of the specified variable.
-	 * @param name
-	 * @param value
-	 */
-	void setVariable(String name, String value);
+    /**
+     * Get the current value of the specified variable.
+     *
+     * @param name the name
+     * @return the current value of the specified variable
+     */
+    String getVariable(String name);
 
-	/**
-	 * Get the last response.
-	 *
-	 * @return the last response
-	 */
-	ZestResponse getLastResponse();
-	
-	/**
-	 * Get the last request.
-	 *
-	 * @return the last request
-	 */
-	ZestRequest getLastRequest();
-	
-	/**
-	 * Replace any variables in the supplied string
-	 * @param str
-	 * @param urlEncode
-	 * @return the string with the variables replaces
-	 */
-	String replaceVariablesInString (String str, boolean urlEncode);
+    /**
+     * Set the value of the specified variable.
+     *
+     * @param name
+     * @param value
+     */
+    void setVariable(String name, String value);
 
-	/**
-	 * Outputs the specified string
-	 * @param str
-	 */
-	void output(String str);
+    /**
+     * Get the last response.
+     *
+     * @return the last response
+     */
+    ZestResponse getLastResponse();
 
-	ScriptEngineFactory getScriptEngineFactory();
+    /**
+     * Get the last request.
+     *
+     * @return the last request
+     */
+    ZestRequest getLastRequest();
 
-	/**
-	 * Sets the standard variables for a request.
-	 *
-	 * @param request the new standard variables
-	 */
+    /**
+     * Replace any variables in the supplied string
+     *
+     * @param str
+     * @param urlEncode
+     * @return the string with the variables replaces
+     */
+    String replaceVariablesInString(String str, boolean urlEncode);
 
-	void setStandardVariables(ZestRequest request);
+    ScriptEngineFactory getScriptEngineFactory();
 
-	/**
-	 * Sets the standard variables for a response.
-	 *
-	 * @param response the new standard variables
-	 */
+    /**
+     * Sets the standard variables for a request.
+     *
+     * @param request the new standard variables
+     */
+    void setStandardVariables(ZestRequest request);
 
-	void setStandardVariables(ZestResponse response);
-	
-	/**
-	 * Sets the proxy.
-	 *
-	 * @param host the host
-	 * @param port the port
-	 */
-	void setProxy(String host, int port);
+    /**
+     * Sets the standard variables for a response.
+     *
+     * @param response the new standard variables
+     */
+    void setStandardVariables(ZestResponse response);
 
-	/**
-	 * Gets the proxy, as host:port
-	 */
-	String getProxy();
+    /**
+     * Sets the proxy.
+     *
+     * @param host the host
+     * @param port the port
+     */
+    void setProxy(String host, int port);
 
-	/**
-	 * Add a handle associated with a WebDriver
-	 * @param handle
-	 * @param wd
-	 */
-	void addWebDriver(String handle, WebDriver wd);
-	
-	/**
-	 * Remove a handle associated with a WebDriver
-	 * @param handle
-	 */
-	void removeWebDriver(String handle);
+    /** Gets the proxy, as host:port */
+    String getProxy();
 
-	/**
-	 * Get the WebDriver assicated with the handle
-	 * @param handle
-	 * @return the {@code WebDriver}.
-	 */
-	WebDriver getWebDriver(String handle);
-	
-	/**
-	 * Return all of the WebDrivers
-	 * 
-	 * @return all the {@code WebDriver}s.
-	 */
-	List<WebDriver> getWebDrivers();
+    /**
+     * Add a handle associated with a WebDriver
+     *
+     * @param handle
+     * @param wd
+     */
+    void addWebDriver(String handle, WebDriver wd);
 
-	/**
-	 * Outputs the supplied message if debugging is turned on
-	 * @param str
-	 */
-	void debug(String str);
+    /**
+     * Remove a handle associated with a WebDriver
+     *
+     * @param handle
+     */
+    void removeWebDriver(String handle);
+
+    /**
+     * Get the WebDriver assicated with the handle
+     *
+     * @param handle
+     * @return the {@code WebDriver}.
+     */
+    WebDriver getWebDriver(String handle);
+
+    /**
+     * Return all of the WebDrivers
+     *
+     * @return all the {@code WebDriver}s.
+     */
+    List<WebDriver> getWebDrivers();
 }

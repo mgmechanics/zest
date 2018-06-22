@@ -1,12 +1,12 @@
 plugins {
-    id "com.diffplug.gradle.spotless" version "3.4.1"
+    id "com.diffplug.gradle.spotless" version "3.10.0"
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.0.1'
+wrapper {
+    gradleVersion = '4.7'
 }
 
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'application'
@@ -21,19 +21,29 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 group 'org.mozilla'
-version '0.13-SNAPSHOT'
+version '0.14.0-SNAPSHOT'
 
 mainClassName = 'org.mozilla.zest.impl.CmdLine'
 
+sourceSets.test.resources.srcDirs 'examples'
+
 dependencies {
-    compile ('commons-httpclient:commons-httpclient:3.1',
+    // XXX Change to implementation at some point, currently exposed through `ZestRequest.addCookie` and `getCookies()`.
+    api 'commons-httpclient:commons-httpclient:3.1'
+    implementation (
              'com.google.code.gson:gson:2.2.2',
              'com.opera:operadriver:1.5',
-             'com.github.detro.ghostdriver:phantomjsdriver:1.1.0',
-             'org.seleniumhq.selenium:selenium-server:3.4.0',
+             'com.codeborne:phantomjsdriver:1.4.3',
+             'org.seleniumhq.selenium:selenium-server:3.11.0',
              'net.htmlparser.jericho:jericho-html:3.1')
 
-    testCompile('junit:junit:4.11')
+    implementation('com.machinepublishers:jbrowserdriver:1.0.0-RC1') {
+        exclude group: 'org.seleniumhq.selenium'
+    }
+
+    testImplementation('junit:junit:4.11',
+                'com.github.tomakehurst:wiremock-standalone:2.14.0',
+                'org.mockito:mockito-core:2.13.0')
 }
 
 jar {
@@ -57,7 +67,7 @@ tasks.withType(JavaCompile) {
 
 tasks.withType(Javadoc) {
     options {
-        links = [ 'http://docs.oracle.com/javase/7/docs/api/' ]
+        links = [ 'https://docs.oracle.com/javase/8/docs/api/' ]
         encoding = 'UTF-8'
     }
     if (JavaVersion.current().isJava8Compatible()) {
@@ -68,6 +78,8 @@ tasks.withType(Javadoc) {
 spotless {
     java {
         licenseHeaderFile "$projectDir/gradle/spotless/license.java"
+
+        googleJavaFormat().style('AOSP')
     }
 }
 
@@ -149,6 +161,7 @@ uploadArchives {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment ->
                 signing.signPom(deployment)
+                deployment.attachedArtifacts.removeAll { it.type =~ /^tar|zip/ }
             }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
